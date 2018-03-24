@@ -1,0 +1,86 @@
+# Spyder
+##There are several approaches to this, but i will present only two
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import csv
+
+#load data file using pandas
+data_file= pd.read_csv('myscript.csv',delimiter=',')
+Gender, Age, Spend = [], [], []# headings of the data
+
+print (data_file[:,0])# this prints all the data
+
+#Alternatively, we can load data using numpy, though pandas is faster than numpy
+data_file= np.loadtxt('myscript.txt', delimiter=',')# just an alternative
+Gender, Age, Spend = [], [], []# headings of the data
+print (data_file[:,0])# this prints all the data
+
+
+
+Gender_col= data_file['Gender']
+print(Gender_col)# This prints the gender column only
+#Test data type of each row
+
+Age= data_file['Age']
+print(Age[:])# Print all ages
+avg_age_col= np.mean(Age)# Calculates the average age of all buyers
+max_age_col= np.max(Age)#calculates the maximum age of buyers
+min_age_col= np.min(Age)#calculates the minimum ageof buyers
+print(avg_age_col)
+print(max_age_col)
+print(min_age_col)
+
+Spend= data_file['Spend']
+print(Spend[:])
+avg_spend_col= np.mean(Spend)# Calcultes the average Spend of all buyers
+max_spend_col= np.max(Spend)#calculates the maximum spend value
+min_spend_col= np.min(Spend)#calculates the minimum spendvalue
+print(avg_spend_col)
+print(max_spend_col)
+print(min_spend_col)
+
+#having calculated the average, i now proceed to create a new table with above average spenders
+my_data= [Age<=90,Spend>=avg_spend_col, Gender_col]
+result= pd.concat(my_data,axis=1)
+print(result)
+
+plt.scatter(Age, Spend,color='r')#Plot the scatter graph
+plt.scatter(Gender_col, Spend,color='b')
+plt.show()
+
+
+#I can import data from an SQL file and run queries in python as follows
+import sqlite3
+my_data2= sqlite3.connect("C:\\Users\\goodwill\\Desktop\\buyers.db")
+query= "SELECT* FROM buyers;"
+results= pd.read_sql(query, my_data2)
+print (results.head())
+#we can then run the usual SQL queries and manipulate the data
+
+
+
+### IF THE DATA IS TOO BIG, WE CAN USE THE FOLLOWING CODE
+def getstuff(filename, criterion):
+    with open(filename, "rb") as csvfile:
+        datareader = csv.reader(csvfile)
+        count = 0
+    for row in datareader:
+        if row[3] in ("column header", criterion):
+                yield row
+                count += 1
+        elif count < 2:
+                continue
+        else:
+                return
+def getdata(filename, criteria):
+     for criterion in criteria:
+         for row in getstuff(filename, criterion):
+            yield row
+##if the data is too big, we can also process it in chunks as follows
+file_name= ('C:/Users/Goodwill Mumvenge/desktop/myscript.csv')
+chunksize = 10 ** 10
+for chunk in pd.read_csv(file_name.csv, chunksize=chunksize):
+    print (chunk[0:2])# This will print two the chunks of similar size
+    
